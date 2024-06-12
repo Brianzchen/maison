@@ -1,27 +1,31 @@
 mod git_undo;
 
-use clap::Parser;
 use crate::git_undo::git_undo;
 
 /// Repo maintenance CLI to help you keep your house in order
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    /// The feature of Maison to invoke (ie: loc)
-    feature: String,
-}
-
 fn main() {
-    let args = Args::parse();
+    let cmd = clap::Command::new("maison")
+        .bin_name("maison")
+        .subcommand_required(true)
+        .subcommand(
+            clap::command!("loc")
+            .arg(clap::arg!(--"count"))
+        )
+        .subcommand(clap::command!("git-undo"));
 
-    let feature = args.feature.clone();
-    let feature = feature.as_str();
+    let matches = cmd.get_matches();
+    let matches = matches.subcommand();
 
-    match feature{
-        "loc"=> println!("you called loc!"),
-        "git-undo"=> git_undo(),
-        _=> {
-            panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
-        }
+    match matches {
+        Some((feature, _matches)) => {
+            match feature {
+                "loc" => println!("you called loc!"),
+                "git-undo" => git_undo(),
+                _=> {
+                    panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
+                }
+            }
+        },
+        _ => {}
     }
 }
