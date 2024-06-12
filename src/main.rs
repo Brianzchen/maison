@@ -1,4 +1,7 @@
+mod git_undo;
+
 use clap::Parser;
+use crate::git_undo::git_undo;
 
 /// Repo maintenance CLI to help you keep your house in order
 #[derive(Parser, Debug)]
@@ -11,9 +14,14 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if args.feature == "loc" {
-        println!("you called loc!");
-    } else {
-        panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example")
+    let feature = args.feature.clone();
+    let feature = feature.as_str();
+
+    match feature{
+        "loc"=> println!("you called loc!"),
+        "git-undo"=> git_undo(),
+        _=> {
+            panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
+        }
     }
 }
