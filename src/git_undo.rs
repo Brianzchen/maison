@@ -1,8 +1,12 @@
 use std::process::Command;
 
 pub fn git_undo() {
-    Command::new("sh")
-        .arg("git reset --soft HEAD~1")
-        .output()
+    println!("Running git undo on last commit");
+
+    Command::new("git")
+        .arg("reset")
+        .arg("--soft")
+        .arg("HEAD~1")
+        .spawn()
         .unwrap();
 }
