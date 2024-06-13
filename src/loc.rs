@@ -5,7 +5,11 @@ use std::{
 
 use clap::ArgMatches;
 
-fn check_if_dir(file_or_dir: &DirEntry, extension: Option<&String>) -> Vec<String> {
+fn check_if_dir(
+    file_or_dir: &DirEntry,
+    extension: Option<&String>,
+    ignore_gitignore_files: bool,
+) -> Vec<String> {
     let path = file_or_dir.path();
 
     if path.is_file() {
@@ -34,7 +38,11 @@ fn check_if_dir(file_or_dir: &DirEntry, extension: Option<&String>) -> Vec<Strin
 
         let mut nested_files: Vec<String> = vec![];
         for entry in nested_dirs {
-            nested_files.extend(check_if_dir(&entry.unwrap(), extension));
+            nested_files.extend(check_if_dir(
+                &entry.unwrap(),
+                extension,
+                ignore_gitignore_files,
+            ));
         }
 
         return nested_files;
@@ -43,6 +51,8 @@ fn check_if_dir(file_or_dir: &DirEntry, extension: Option<&String>) -> Vec<Strin
 
 pub fn run(matches: &ArgMatches) {
     let extension = matches.get_one::<String>("extension");
+    let ignore_gitignore_files = matches.get_one::<String>("gitignore").unwrap();
+    let ignore_gitignore_files = ignore_gitignore_files == "true";
     // Read the current directory
     let current_dir = fs::read_dir(".").unwrap();
 
@@ -51,7 +61,7 @@ pub fn run(matches: &ArgMatches) {
     for entry in current_dir {
         let entry = entry.unwrap();
 
-        files.extend(check_if_dir(&entry, extension));
+        files.extend(check_if_dir(&entry, extension, ignore_gitignore_files));
     }
 
     for (_index, file_name) in files.iter().enumerate() {

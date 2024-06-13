@@ -5,17 +5,25 @@ mod loc;
 fn main() {
     let cmd = clap::Command::new("maison")
         .subcommand_required(true)
-        .subcommand(
-            clap::command!("loc").arg(
+        .subcommand(clap::command!("loc")
+            .arg(
                 clap::Arg::new("extension")
                     .long("ext")
                     .short('c')
                     .help("Filter by a give file extension ie, rs or js")
                     .value_parser(clap::value_parser!(String)),
+            )
+            .arg(
+                clap::Arg::new("gitignore")
+                    .long("gitignore")
+                    .help("Whether the command will respect the gitignore in the current working directory")
+                    .value_parser(["true", "false"])
+                    .default_value("true")
+                    .ignore_case(true),
             ),
         )
-        .subcommand(
-            clap::command!("git-undo").arg(
+        .subcommand(clap::command!("git-undo")
+            .arg(
                 clap::Arg::new("commits")
                     .long("commits")
                     .short('c')
