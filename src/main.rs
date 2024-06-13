@@ -12,8 +12,9 @@ fn main() {
             clap::command!("git-undo")
             .arg(
                 clap::Arg::new("count")
-                    .long("count")
+                    .long("commits")
                     .short('c')
+                    .help("The number of commits to be undone")
                     .value_parser(clap::value_parser!(i16).range(1..10))
                     .default_value("1")
             ),
