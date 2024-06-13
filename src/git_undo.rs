@@ -1,6 +1,6 @@
 use std::process::Command;
 
-pub fn git_undo() {
+pub fn run() {
     println!("Running git undo on last commit");
 
     Command::new("git")
