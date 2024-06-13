@@ -16,10 +16,10 @@ fn main() {
     let matches = matches.subcommand();
 
     match matches {
-        Some((feature, _matches)) => {
+        Some((feature, feature_matches)) => {
             match feature {
                 "loc" => loc::run(),
-                "git-undo" => git_undo::run(),
+                "git-undo" => git_undo::run(feature_matches),
                 _=> {
                     panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
                 }
