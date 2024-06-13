@@ -4,13 +4,20 @@ mod loc;
 /// Repo maintenance CLI to help you keep your house in order
 fn main() {
     let cmd = clap::Command::new("maison")
-        .bin_name("maison")
         .subcommand_required(true)
         .subcommand(
             clap::command!("loc")
-            .arg(clap::arg!(--"count"))
         )
-        .subcommand(clap::command!("git-undo"));
+        .subcommand(
+            clap::command!("git-undo")
+            .arg(
+                clap::Arg::new("count")
+                    .long("count")
+                    .short('c')
+                    .value_parser(clap::value_parser!(i16).range(1..10))
+                    .default_value("1")
+            ),
+        );
 
     let matches = cmd.get_matches();
     let matches = matches.subcommand();
