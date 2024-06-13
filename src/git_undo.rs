@@ -1,5 +1,5 @@
-use std::process::Command;
 use clap::ArgMatches;
+use std::process::Command;
 
 pub fn run(matches: &ArgMatches) {
     println!("Running git undo on last commit");

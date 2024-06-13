@@ -1,23 +1,48 @@
-use std::fs::{self, DirEntry};
+use std::{
+    fs::{self, DirEntry},
+    vec,
+};
 
-fn check_if_dir(file_or_dir: &DirEntry) -> Vec<String> {
+use clap::ArgMatches;
+
+fn check_if_dir(file_or_dir: &DirEntry, extension: Option<&String>) -> Vec<String> {
     let path = file_or_dir.path();
 
     if path.is_file() {
-        return vec![path.as_os_str().to_str().unwrap().to_string()];
+        let file = vec![path.as_os_str().to_str().unwrap().to_string()];
+
+        match extension {
+            Some(ext) => {
+                match path.extension() {
+                    Some(file_ext) => {
+                        if &file_ext.to_str().unwrap().to_string() == ext {
+                            return file;
+                        }
+                    }
+                    None => {
+                        if ext == "." {
+                            return file;
+                        }
+                    }
+                }
+                return vec![];
+            }
+            None => file,
+        }
     } else {
         let nested_dirs = fs::read_dir(path).unwrap();
 
         let mut nested_files: Vec<String> = vec![];
         for entry in nested_dirs {
-            nested_files.extend(check_if_dir(&entry.unwrap()));
+            nested_files.extend(check_if_dir(&entry.unwrap(), extension));
         }
 
         return nested_files;
     }
 }
 
-pub fn run() {
+pub fn run(matches: &ArgMatches) {
+    let extension = matches.get_one::<String>("extension");
     // Read the current directory
     let current_dir = fs::read_dir(".").unwrap();
 
@@ -26,7 +51,7 @@ pub fn run() {
     for entry in current_dir {
         let entry = entry.unwrap();
 
-        files.extend(check_if_dir(&entry));
+        files.extend(check_if_dir(&entry, extension));
     }
 
     for (_index, file_name) in files.iter().enumerate() {

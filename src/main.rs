@@ -6,17 +6,22 @@ fn main() {
     let cmd = clap::Command::new("maison")
         .subcommand_required(true)
         .subcommand(
-            clap::command!("loc")
+            clap::command!("loc").arg(
+                clap::Arg::new("extension")
+                    .long("ext")
+                    .short('c')
+                    .help("Filter by a give file extension ie, rs or js")
+                    .value_parser(clap::value_parser!(String)),
+            ),
         )
         .subcommand(
-            clap::command!("git-undo")
-            .arg(
+            clap::command!("git-undo").arg(
                 clap::Arg::new("commits")
                     .long("commits")
                     .short('c')
                     .help("The number of commits to be undone")
                     .value_parser(clap::value_parser!(i16).range(1..10))
-                    .default_value("1")
+                    .default_value("1"),
             ),
         );
 
@@ -24,13 +29,11 @@ fn main() {
     let matches = matches.subcommand();
 
     match matches {
-        Some((feature, feature_matches)) => {
-            match feature {
-                "loc" => loc::run(),
-                "git-undo" => git_undo::run(feature_matches),
-                _=> {
-                    panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
-                }
+        Some((feature, feature_matches)) => match feature {
+            "loc" => loc::run(feature_matches),
+            "git-undo" => git_undo::run(feature_matches),
+            _ => {
+                panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
             }
         },
         _ => {}
