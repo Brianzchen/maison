@@ -3,6 +3,7 @@ use std::{
 };
 
 use clap::ArgMatches;
+use gix_ignore::{glob::wildmatch::Mode, parse};
 
 fn get_gitignore_paths(gitignore: &String) -> Vec<String> {
     let ignore_gitignore_files = gitignore == "true";
@@ -18,9 +19,11 @@ fn get_gitignore_paths(gitignore: &String) -> Vec<String> {
             let _ = file.read_to_string(&mut contents);
 
             let lines: Vec<String> = contents.split('\n').map(|s| s.to_string()).collect();
-            let lines = lines.into_iter().filter(|line| {
-                !line.starts_with("#") && line.trim().len() != 0
+            let mut lines: Vec<String> = lines.into_iter().filter(|line| {
+                !line.starts_with("#") && !line.trim().is_empty()
             }).collect();
+
+            lines.push(String::from(".git/"));
 
             lines
         },
@@ -36,9 +39,27 @@ fn check_if_dir(
     ignored_paths: &Vec<String>,
 ) -> Vec<String> {
     let path = file_or_dir.path();
+    let path_name = path.as_os_str().to_str().unwrap().to_string();
+
+    let is_gitignored_path = ignored_paths.into_iter().find(|pattern| {
+        let hi = parse(pattern.as_bytes());
+        match hi.into_iter().find(|(line, _, _)| {
+            let is_match = line.matches(
+                path_name[2..].as_bytes().into(),
+                Mode::IGNORE_CASE
+            );
+            is_match
+        }) {
+            Some(_) => true,
+            None => false
+        }
+    });
+    if let Some(_) = is_gitignored_path {
+        return vec![];
+    }
 
     if path.is_file() {
-        let file = vec![path.as_os_str().to_str().unwrap().to_string()];
+        let file = vec![path_name];
 
         match extension {
             Some(ext) => {
@@ -90,6 +111,6 @@ pub fn run(matches: &ArgMatches) {
     }
 
     for (_index, file_name) in files.iter().enumerate() {
-        // println!("{file_name}");
+        println!("{file_name}");
     }
 }
