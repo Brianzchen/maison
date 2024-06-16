@@ -10,7 +10,7 @@ jobs:
       - name: Extract version from Cargo.toml
         run: |
           VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml)
-          echo "::set-env name=VERSION::${VERSION}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Build and package
         run: cargo build --release
       - name: Create release
