@@ -15,6 +15,8 @@ jobs:
         run: cargo build --release
       - name: Create release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: v${{ env.VERSION }}
           release_name: v${{ env.VERSION }}
