@@ -14,22 +14,10 @@ jobs:
       - name: Build and package
         run: cargo build --release
       - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           release_name: v${{ env.VERSION }}
           draft: false
           prerelease: false
-        outputs:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-      - name: Upload artifact to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: target/release/maison
-          asset_name: maison
-          asset_content_type: application/octet-stream
+          files: target/release/maison
