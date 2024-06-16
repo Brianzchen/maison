@@ -20,6 +20,14 @@ fn main() {
                     .value_parser(["true", "false"])
                     .default_value("true")
                     .ignore_case(true),
+            )
+            .arg(
+                clap::Arg::new("directory")
+                    .long("dir")
+                    .short('d')
+                    .help("Run command relative to current working directory")
+                    .value_parser(clap::value_parser!(String))
+                    .default_value("."),
             ),
         )
         .subcommand(clap::command!("git-undo")

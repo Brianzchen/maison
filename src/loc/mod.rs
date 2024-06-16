@@ -12,6 +12,7 @@ fn get_gitignore_paths(gitignore: &String) -> Vec<String> {
         return vec![];
     }
 
+    // TODO: This should be traversed upward in a future task
     match File::open(".gitignore") {
         Ok(mut file) => {
             // let mut file = .expect("Found .gitignore file but failed to read");
@@ -98,9 +99,11 @@ fn check_if_dir(
 pub fn run(matches: &ArgMatches) {
     let extension = matches.get_one::<String>("extension");
     let ignore_gitignore_files = matches.get_one::<String>("gitignore").unwrap();
+    let parsing_directory = matches.get_one::<String>("directory").unwrap();
+
     let ignored_paths = get_gitignore_paths(ignore_gitignore_files);
     // Read the current directory
-    let current_dir = fs::read_dir(".").unwrap();
+    let current_dir = fs::read_dir(parsing_directory).unwrap();
 
     let mut files: Vec<String> = Vec::new();
 
