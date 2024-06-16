@@ -1,6 +1,9 @@
 [package]
 name = "maison"
+description = "CLI tool to help keep your house in order"
 version = "0.1.0"
+license-file = "LICENSE.txt"
+repository = "https://github.com/Brianzchen/maison"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

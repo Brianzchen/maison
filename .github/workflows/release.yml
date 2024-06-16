@@ -1,0 +1,28 @@
+name: Build and Release
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Extract version from Cargo.toml
+        run: |
+          VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[0].version')
+          echo "Version: $VERSION" >> $GITHUB_ENV
+      - name: Build and package
+        run: cargo build --release
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ env.VERSION }}
+        with:
+          tag_name: $VERSION
+          release_name: $VERSION
+          draft: false
+          prerelease: false
+      - name: Upload binary to release
+        uses: actions/upload-artifact@v2
+        with:
+          name: maison
+          path: target/release/maison
