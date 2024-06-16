@@ -1,5 +1,7 @@
 use std::{
-    fs::{self, DirEntry, File}, io::Read, vec
+    fs::{self, DirEntry, File},
+    io::Read,
+    vec,
 };
 
 use clap::ArgMatches;
@@ -20,17 +22,18 @@ fn get_gitignore_paths(gitignore: &String) -> Vec<String> {
             let _ = file.read_to_string(&mut contents);
 
             let lines: Vec<String> = contents.split('\n').map(|s| s.to_string()).collect();
-            let mut lines: Vec<String> = lines.into_iter().filter(|line| {
-                !line.starts_with("#") && !line.trim().is_empty()
-            }).collect();
+            let mut lines: Vec<String> = lines
+                .into_iter()
+                .filter(|line| !line.starts_with("#") && !line.trim().is_empty())
+                .collect();
 
             lines.push(String::from(".git/"));
 
             lines
-        },
+        }
         Err(_) => {
             vec![]
-        },
+        }
     }
 }
 
@@ -45,14 +48,11 @@ fn check_if_dir(
     let is_gitignored_path = ignored_paths.into_iter().find(|pattern| {
         let hi = parse(pattern.as_bytes());
         match hi.into_iter().find(|(line, _, _)| {
-            let is_match = line.matches(
-                path_name[2..].as_bytes().into(),
-                Mode::IGNORE_CASE
-            );
+            let is_match = line.matches(path_name[2..].as_bytes().into(), Mode::IGNORE_CASE);
             is_match
         }) {
             Some(_) => true,
-            None => false
+            None => false,
         }
     });
     if let Some(_) = is_gitignored_path {
@@ -85,11 +85,7 @@ fn check_if_dir(
 
         let mut nested_files: Vec<String> = vec![];
         for entry in nested_dirs {
-            nested_files.extend(check_if_dir(
-                &entry.unwrap(),
-                extension,
-                ignored_paths,
-            ));
+            nested_files.extend(check_if_dir(&entry.unwrap(), extension, ignored_paths));
         }
 
         return nested_files;
@@ -113,7 +109,19 @@ pub fn run(matches: &ArgMatches) {
         files.extend(check_if_dir(&entry, extension, &ignored_paths));
     }
 
+    let mut lines_of_code: u64 = 0;
     for (_index, file_name) in files.iter().enumerate() {
-        println!("{file_name}");
+        let mut file_content = String::new();
+        let mut file =
+            File::open(file_name).expect(&format!("Was unable to open found file: {}", file_name));
+        file.read_to_string(&mut file_content).unwrap();
+
+        let file_content: Vec<&str> = file_content.split("\n").collect();
+        lines_of_code += file_content.len() as u64;
     }
+
+    println!(
+        "Directory {} has total of {} lines of code",
+        parsing_directory, lines_of_code
+    );
 }
