@@ -7,3 +7,15 @@ Keep your house in order
 1. Have rust installed
 1. Run `cargo run [command]` in the root directory
 1. `cargo fmt` to format code
+
+# Install
+
+Once working
+
+```sh
+curl -o maison https://github.com/Brianzchen/maison/releases/download/latest/maison
+chmod +x ./maison
+sudo mv maison /usr/local/bin/
+
+maison --version
+```
