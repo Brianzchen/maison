@@ -17,14 +17,17 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          VERSION: ${{ env.VERSION }}
         with:
-          tag_name: $VERSION
-          release_name: $VERSION
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
           draft: false
           prerelease: false
-      - name: Upload binary to release
-        uses: actions/upload-artifact@v2
+      - name: Upload artifact to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: maison
-          path: target/release/maison
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: target/release/maison
+          asset_name: maison
+          asset_content_type: application/octet-stream
