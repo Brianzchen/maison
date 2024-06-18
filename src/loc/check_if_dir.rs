@@ -10,8 +10,8 @@ pub fn run(
     let path_name = path.as_os_str().to_str().unwrap().to_string();
 
     let is_gitignored_path = ignored_paths.into_iter().find(|pattern| {
-        let hi = parse(pattern.as_bytes());
-        match hi.into_iter().find(|(line, _, _)| {
+        let pattern = parse(pattern.as_bytes());
+        match pattern.into_iter().find(|(line, _, _)| {
             let is_match = line.matches(path_name[2..].as_bytes().into(), Mode::IGNORE_CASE);
             is_match
         }) {
@@ -54,4 +54,19 @@ pub fn run(
 
         return nested_files;
     }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn returns_a_list_of_files_in_path() {}
+
+    #[test]
+    fn able_to_ignore_paths_correctly() {}
+
+    #[test]
+    fn can_filter_on_file_extension() {}
+
+    #[test]
+    fn giving_extension_as_dot_returns_files_without_extension() {}
 }

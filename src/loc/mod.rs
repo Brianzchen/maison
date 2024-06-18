@@ -35,8 +35,8 @@ pub fn run(matches: &ArgMatches) {
             Ok(_) => {
                 let file_content: Vec<&str> = file_content.split("\n").collect();
                 lines_of_code += file_content.len() as u64;
-            },
-            Err(_) => {},
+            }
+            Err(_) => {}
         };
     }
 

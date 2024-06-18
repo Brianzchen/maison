@@ -39,13 +39,22 @@ mod tests {
 
     use super::*;
 
+    fn cleanup_gitignore() {
+        let temp_dir = env::temp_dir();
+        let _ = fs::remove_file(&temp_dir.join(".gitignore"));
+    }
+
     fn setup() -> PathBuf {
         let temp_dir = env::temp_dir();
         env::set_current_dir(&temp_dir).unwrap();
 
-        let _ = fs::remove_file(&temp_dir.join(".gitignore"));
+        cleanup_gitignore();
 
         return temp_dir;
+    }
+
+    fn teardown() {
+        cleanup_gitignore();
     }
 
     #[test]
@@ -56,6 +65,8 @@ mod tests {
         let paths = run(&gitignore);
 
         assert!(paths.len() == 0);
+
+        teardown();
     }
 
     #[test]
@@ -67,6 +78,8 @@ mod tests {
 
         assert!(paths.contains(&String::from(".git/")));
         assert!(paths.len() == 1);
+
+        teardown();
     }
 
     #[test]
@@ -81,5 +94,7 @@ mod tests {
 
         assert!(paths.contains(&String::from(".git/")));
         assert!(paths.len() == 3);
+
+        teardown();
     }
 }
