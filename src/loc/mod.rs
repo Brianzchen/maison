@@ -30,10 +30,14 @@ pub fn run(matches: &ArgMatches) {
         let mut file_content = String::new();
         let mut file =
             File::open(file_name).expect(&format!("Was unable to open found file: {}", file_name));
-        let _ = file.read_to_string(&mut file_content);
 
-        let file_content: Vec<&str> = file_content.split("\n").collect();
-        lines_of_code += file_content.len() as u64;
+        match file.read_to_string(&mut file_content) {
+            Ok(_) => {
+                let file_content: Vec<&str> = file_content.split("\n").collect();
+                lines_of_code += file_content.len() as u64;
+            },
+            Err(_) => {},
+        };
     }
 
     println!(
