@@ -4,7 +4,6 @@ mod get_gitignore_paths;
 use std::{
     fs::{self, File},
     io::Read,
-
 };
 
 use clap::ArgMatches;
