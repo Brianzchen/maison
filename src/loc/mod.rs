@@ -41,7 +41,7 @@ pub fn run(matches: &ArgMatches) {
     }
 
     println!(
-        "Directory {} has total of {} lines of code",
-        parsing_directory, lines_of_code
+        "Directory {} has total of {} lines of code across {} files",
+        parsing_directory, lines_of_code, files.len()
     );
 }

@@ -58,15 +58,35 @@ pub fn run(
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn returns_a_list_of_files_in_path() {}
+    use std::{env::temp_dir, fs::remove_dir_all};
+
+    fn teardown() {
+        let temp_dir = temp_dir();
+
+        let _ = remove_dir_all(temp_dir.join("check_dir"));
+    }
 
     #[test]
-    fn able_to_ignore_paths_correctly() {}
+    fn returns_a_list_of_files_in_path() {
+        let _ = temp_dir();
+        // File::create_new(&temp_dir.join("check_dir").join("blah.js")).unwrap();
+        // File::create_new(&temp_dir.join("check_dir").join("foo.rs")).unwrap();
+
+        teardown();
+    }
 
     #[test]
-    fn can_filter_on_file_extension() {}
+    fn able_to_ignore_paths_correctly() {
+        teardown();
+    }
 
     #[test]
-    fn giving_extension_as_dot_returns_files_without_extension() {}
+    fn can_filter_on_file_extension() {
+        teardown();
+    }
+
+    #[test]
+    fn giving_extension_as_dot_returns_files_without_extension() {
+        teardown();
+    }
 }
