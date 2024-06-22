@@ -1,5 +1,6 @@
 mod git_undo;
 mod loc;
+mod utils;
 
 /// Repo maintenance CLI to help you keep your house in order
 fn main() {
@@ -28,6 +29,14 @@ fn main() {
                     .help("Run command relative to current working directory")
                     .value_parser(clap::value_parser!(String))
                     .default_value("."),
+            )
+            .arg(
+                clap::Arg::new("value")
+                    .long("value")
+                    .help("When you want to log only the loc value, useful when piping into another function later")
+                    .value_parser(["true", "false"])
+                    .default_value("false")
+                    .ignore_case(true),
             ),
         )
         .subcommand(clap::command!("git-undo")

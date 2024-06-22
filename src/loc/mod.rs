@@ -4,14 +4,20 @@ mod get_gitignore_paths;
 use std::{
     fs::{self, File},
     io::Read,
+    time::SystemTime,
 };
 
 use clap::ArgMatches;
 
+use crate::utils::{end_time, log};
+
 pub fn run(matches: &ArgMatches) {
+    let start_time = SystemTime::now();
+
     let extension = matches.get_one::<String>("extension");
     let ignore_gitignore_files = matches.get_one::<String>("gitignore").unwrap();
     let parsing_directory = matches.get_one::<String>("directory").unwrap();
+    let as_value = matches.get_one::<String>("value").unwrap() == "true";
 
     let ignored_paths = get_gitignore_paths::run(ignore_gitignore_files);
     // Read the current directory
@@ -40,8 +46,15 @@ pub fn run(matches: &ArgMatches) {
         };
     }
 
-    println!(
-        "Directory {} has total of {} lines of code across {} files",
-        parsing_directory, lines_of_code, files.len()
+    log(
+        !as_value,
+        format!(
+            "Directory {} has total of {} lines of code across {} files",
+            parsing_directory,
+            lines_of_code,
+            files.len()
+        ),
     );
+    log(as_value, format!("{lines_of_code}",));
+    end_time(!as_value, start_time);
 }
