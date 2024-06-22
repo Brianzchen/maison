@@ -18,6 +18,7 @@ pub fn run(matches: &ArgMatches) {
     let ignore_gitignore_files = matches.get_one::<String>("gitignore").unwrap();
     let parsing_directory = matches.get_one::<String>("directory").unwrap();
     let as_value = matches.get_one::<String>("value").unwrap() == "true";
+    let timing_enabled = matches.get_one::<String>("timing").unwrap() == "true";
 
     let ignored_paths = get_gitignore_paths::run(ignore_gitignore_files);
     // Read the current directory
@@ -56,5 +57,5 @@ pub fn run(matches: &ArgMatches) {
         ),
     );
     log(as_value, format!("{lines_of_code}",));
-    end_time(!as_value, start_time);
+    end_time(!as_value && timing_enabled, start_time);
 }

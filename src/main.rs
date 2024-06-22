@@ -37,6 +37,15 @@ fn main() {
                     .value_parser(["true", "false"])
                     .default_value("false")
                     .ignore_case(true),
+            )
+            .arg(
+                clap::Arg::new("timing")
+                    .long("timing")
+                    .short('t')
+                    .help("Whether you want debug timings to print")
+                    .value_parser(["true", "false"])
+                    .default_value("false")
+                    .ignore_case(true),
             ),
         )
         .subcommand(clap::command!("git-undo")
