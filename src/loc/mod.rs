@@ -22,7 +22,7 @@ pub fn run(matches: &ArgMatches) {
 
     let ignored_paths = get_gitignore_paths::run(ignore_gitignore_files);
     // Read the current directory
-    let current_dir = fs::read_dir(parsing_directory).unwrap();
+    let current_dir = fs::read_dir(parsing_directory).expect("Target dir must not be a file");
 
     let mut files: Vec<String> = Vec::new();
 
