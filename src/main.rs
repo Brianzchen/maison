@@ -5,6 +5,17 @@ mod utils;
 fn main() {
     let cmd = clap::Command::new("maison")
         .subcommand_required(true)
+        .subcommand(clap::command!("diff"))
+        .subcommand(clap::command!("git-undo")
+            .arg(
+                clap::Arg::new("commits")
+                    .long("commits")
+                    .short('c')
+                    .help("The number of commits to be undone")
+                    .value_parser(clap::value_parser!(i16).range(1..10))
+                    .default_value("1"),
+            ),
+        )
         .subcommand(clap::command!("loc")
             .arg(
                 clap::Arg::new("extension")
@@ -47,16 +58,6 @@ fn main() {
                     .ignore_case(true),
             ),
         )
-        .subcommand(clap::command!("git-undo")
-            .arg(
-                clap::Arg::new("commits")
-                    .long("commits")
-                    .short('c')
-                    .help("The number of commits to be undone")
-                    .value_parser(clap::value_parser!(i16).range(1..10))
-                    .default_value("1"),
-            ),
-        )
         .subcommand(clap::command!("ratchet")
             .arg(
                 clap::Arg::new("name")
@@ -73,6 +74,7 @@ fn main() {
 
     match matches {
         Some((feature, feature_matches)) => match feature {
+            "diff" => commands::diff::run(feature_matches),
             "loc" => commands::loc::run(feature_matches),
             "git-undo" => commands::git_undo::run(feature_matches),
             "ratchet" => commands::ratchet::run(feature_matches),
