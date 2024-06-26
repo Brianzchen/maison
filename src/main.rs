@@ -1,5 +1,4 @@
-mod git_undo;
-mod loc;
+mod commands;
 mod utils;
 
 /// Repo maintenance CLI to help you keep your house in order
@@ -57,6 +56,16 @@ fn main() {
                     .value_parser(clap::value_parser!(i16).range(1..10))
                     .default_value("1"),
             ),
+        )
+        .subcommand(clap::command!("ratchet")
+            .arg(
+                clap::Arg::new("name")
+                    .long("name")
+                    .short('n')
+                    .help("Name of the ratchet to receive and reference later")
+                    .value_parser(clap::value_parser!(String))
+                    .required(true)
+            ),
         );
 
     let matches = cmd.get_matches();
@@ -64,8 +73,9 @@ fn main() {
 
     match matches {
         Some((feature, feature_matches)) => match feature {
-            "loc" => loc::run(feature_matches),
-            "git-undo" => git_undo::run(feature_matches),
+            "loc" => commands::loc::run(feature_matches),
+            "git-undo" => commands::git_undo::run(feature_matches),
+            "ratchet" => commands::ratchet::run(feature_matches),
             _ => {
                 panic!("You must call a valid feature for maison to run upon, try `maison loc` as an example");
             }
